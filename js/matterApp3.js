@@ -34,10 +34,21 @@ function initMatterApp3(canvas) {
     var floor = Matter.Bodies.rectangle(250, 520, 500, 40, {
         isStatic: true, //An immovable object
         render: {
-            visible: false
+            visible: true
         }
     });
     Matter.World.add(world, floor);
+
+    /** Add an arrow */
+    var arrowVertices = Matter.Vertices.fromPath('40 0 40 20 100 20 100 80 40 80 40 100 0 50');
+    var arrow = Matter.Bodies.fromVertices(60, 0, arrowVertices, {
+        render: {
+            fillStyle: "#FF6B6B",
+            strokeStyle: "#C44D58",
+            lineWidth: 1
+        }
+    }, true)
+    Matter.World.add(world, arrow);
 
     //Make interactive
     var mouseConstraint = Matter.MouseConstraint.create(engine, { //Create Constraint
