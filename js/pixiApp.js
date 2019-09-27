@@ -1,5 +1,6 @@
 var basicText1, basicText2;
 var _killCount = 0;
+var tempText;
 
 function initPixiApp(canvas) {
     let pixiApp = new PIXI.Application({
@@ -39,12 +40,14 @@ function initPixiApp(canvas) {
 
     pixiApp.playButton = playButton;
 
+    addText(pixiApp);
+
     window.addEventListener('resize', resize);
     function resize() {
         playButton.position.set(innerWidth / 2, innerHeight);
+        tempText.position.set(innerWidth / 2, innerHeight * 0.1);
     };
     resize();
-    addText(pixiApp);
 
     return pixiApp;
 }
@@ -63,12 +66,10 @@ function updateCollisionText(one, two) {
     basicText2.text = one + " :: " + two;
 }
 
-var tempText;
-
 function addText(pixiApp) {
     const style = new PIXI.TextStyle({
         fontFamily: 'Arial',
-        fontSize: 36,
+        fontSize: 40,
         fontStyle: 'italic',
         fontWeight: 'bold',
         fill: ['#ffffff', '#00ff99'], // gradient
@@ -80,11 +81,12 @@ function addText(pixiApp) {
         dropShadowAngle: Math.PI / 6,
         dropShadowDistance: 6,
         wordWrap: true,
+        miterLimit: 3,
         wordWrapWidth: 440,
     });
 
-    tempText = new PIXI.Text("", style);
-    tempText.position.set(10, 150);
+    tempText = new PIXI.Text("SAMPLE", style);
+    tempText.anchor.set(0.5);
     tempText.visible = false;
     pixiApp.stage.addChild(tempText);
 }

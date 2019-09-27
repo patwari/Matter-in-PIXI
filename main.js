@@ -55,7 +55,7 @@ function onCollisionDetected(event) {
 function onResponseReceived(event) {
     let txt = getTextElement();
     txt.visible = true;
-    txt.text = "Yo!!!!!!!!!\n RESPONSE_RECEIVED";
+    txt.text = "Yo!!!!!!!!!\nRESPONSE RECEIVED";
 }
 
 /** ==================================================== UPDATE CYCE ==================================================== */
@@ -73,3 +73,9 @@ function update(time) {
 // add events
 document.addEventListener("COLLIDED", onCollisionDetected);
 document.addEventListener("RESPONSE_RECEIVED", onResponseReceived);
+window.addEventListener('resize', resize);
+function resize() {
+    matterSprite2.anchor.set(0.5, 0.5);
+    matterSprite2.position.set(innerWidth / 2, innerHeight / 2);
+};
+resize();
