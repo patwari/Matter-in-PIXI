@@ -45,9 +45,15 @@ pixiApp.stage.addChild(matterSprite3);
 
 const gui = initDatGui();
 
-function onCollisionDetected(events) {
+function onCollisionDetected(event) {
+    if (!matterApp2.getSpinPhase()) { return; }
     increaseKillCount();
+    playSound();
     updateCollisionText(event.detail.bodyA.label, event.detail.bodyB.label)
+}
+
+function onResponseReceived(event) {
+    addText("Yo!!!!!!!!!\n RESPONSE_RECEIVED");
 }
 
 /** ==================================================== UPDATE CYCE ==================================================== */
@@ -64,3 +70,4 @@ function update(time) {
 
 // add events
 document.addEventListener("COLLIDED", onCollisionDetected);
+document.addEventListener("RESPONSE_RECEIVED", onResponseReceived);

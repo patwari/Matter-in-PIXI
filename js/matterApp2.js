@@ -132,6 +132,13 @@ function initMatterApp2(canvas) {
 
             if (!timer) {
                 timer = setTimeout(() => {
+
+                    document.dispatchEvent(new CustomEvent("RESPONSE_RECEIVED", {
+                        detail: {
+                            amount: Math.floor(Math.random() * 1000)
+                        }
+                    }));
+
                     spinPhase = 3;
                     timer = null;
                     Matter.Body.setAngularVelocity(gears, 0.04);
@@ -165,6 +172,10 @@ function initMatterApp2(canvas) {
         }
     }
 
+    function getSpinPhase() {
+        return spinPhase;
+    }
+
     /** return data and controllers. */
     return {
         renderer: render,
@@ -172,5 +183,6 @@ function initMatterApp2(canvas) {
         world,
         render,
         canvas: render.canvas,
+        getSpinPhase
     }
 };
