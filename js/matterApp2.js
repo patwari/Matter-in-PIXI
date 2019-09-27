@@ -5,6 +5,7 @@ function initMatterApp2(canvas) {
     var world = engine.world;
     // remove gravity
     world.gravity.y = 0;
+    world.gravity.x = 100;
 
     var render = Matter.Render.create({
         canvas: canvas,
@@ -23,23 +24,15 @@ function initMatterApp2(canvas) {
     let gears = window.gears = addGear();
     let key = window.key = addKey();
 
-    // apply pivots for gear and key
-    var constraint = Matter.Constraint.create({
-        pointA: { x: 550, y: 600 },
-        bodyB: gears,
-        length: 0
-    });
-    var constraint_2 = Matter.Constraint.create({
-        pointA: { x: 235, y: 600 },
-        bodyB: key,
-        pointB: { x: -50, y: 0 },
-        length: 0
-    });
+    let constraint = applyGearConstraint(gears);
+    let constraint_2 = applyKeyConstraint(key);
+    // Matter.Body.setMass(key, 1);
 
     Matter.World.add(world, [gears, constraint]);
     Matter.World.add(world, [key, constraint_2]);
 
     Matter.Events.on(engine, 'beforeUpdate', onBeforeUpdate);
+    Matter.Events.on(engine, 'collisionStart', onCollision);
 
     /** ====================================================</ MAIN CODE >==================================================== */
     //Start the engine
@@ -58,6 +51,7 @@ function initMatterApp2(canvas) {
         var gearsVertices = Matter.Vertices.fromPath(gearsStr);
         var gears = Matter.Bodies.fromVertices(500, 600, gearsVertices, {
             isStatic: false,
+            label: "game_gear",
             render: {
                 fillStyle: "#228465",
                 strokeStyle: "#356554",
@@ -80,6 +74,7 @@ function initMatterApp2(canvas) {
         var keyVertices = Matter.Vertices.fromPath(keyStr);
         var key = Matter.Bodies.fromVertices(275, 600, keyVertices, {
             isStatic: false,
+            label: "game_key",
             render: {
                 fillStyle: "#995473",
                 strokeStyle: "#457812",
@@ -94,12 +89,38 @@ function initMatterApp2(canvas) {
         return key;
     }
 
+    // apply pivots for gear and key
+    function applyGearConstraint(gears) {
+        return Matter.Constraint.create({
+            pointA: { x: 550, y: 600 },
+            bodyB: gears,
+            length: 0
+        });
+    }
+    // apply pivots for gear and key
+    function applyKeyConstraint(key) {
+        return Matter.Constraint.create({
+            pointA: { x: 235, y: 600 },
+            bodyB: key,
+            pointB: { x: -50, y: 0 },
+            length: 0
+        });
+    }
+
     function onBeforeUpdate(event) {
         // body is static so must manually update velocity for friction to work
         // make compound body rotate constantly
         Matter.Body.setAngularVelocity(gears, 0.04);
         // Matter.Body.setDensuitt
         // Matter.Body.rotate(gears, 0.02);
+    }
+
+    function onCollision(event) {
+        if (Array.isArray(event.pairs)) {
+            event.pairs.forEach(evt => {
+                document.dispatchEvent(new CustomEvent("COLLIDED", { detail: { bodyA: evt.bodyA, bodyB: evt.bodyB } }));
+            });
+        }
     }
 
     /** return data and controllers. */

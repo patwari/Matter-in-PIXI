@@ -45,7 +45,10 @@ pixiApp.stage.addChild(matterSprite3);
 
 const gui = initDatGui();
 
-
+function onCollisionDetected(events) {
+    increaseKillCount();
+    updateCollisionText(event.detail.bodyA.label, event.detail.bodyB.label)
+}
 
 /** ==================================================== UPDATE CYCE ==================================================== */
 requestAnimationFrame(update);
@@ -58,3 +61,6 @@ function update(time) {
 
     requestAnimationFrame(update);
 }
+
+// add events
+document.addEventListener("COLLIDED", onCollisionDetected);

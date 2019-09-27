@@ -7,7 +7,7 @@ var guiSettings = {
 
 function initDatGui() {
     var gui = new dat.GUI();
-    var visibleFolder = gui.addFolder("Threejs apps visiblility", true);
+    var visibleFolder = gui.addFolder("Matterjs apps visiblility", true);
 
     visibleFolder.add(guiSettings, 'layer_01').onChange(guiChangeHandler);
     visibleFolder.add(guiSettings, 'layer_02').onChange(guiChangeHandler);

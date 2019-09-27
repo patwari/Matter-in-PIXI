@@ -78,23 +78,6 @@ function initMatterApp(canvas) {
     Runner.run(runner, engine);
 
     /** ======================================================================================= */
-    Matter.Events.on(engine, 'collisionStart', function (event) {
-        if (Array.isArray(event.pairs)) {
-            event.pairs.forEach(evt => {
-                let a = evt.bodyA;
-                let b = evt.bodyB;
-
-                console.log("PATWARI :: collision", a, b);
-            });
-        }
-        else {
-            let a = event.pairs.bodyA;
-            let b = event.pairs.bodyB;
-
-            console.log("PATWARI :: collision", a, b);
-        }
-
-    });
 
     return {
         renderer: render,
