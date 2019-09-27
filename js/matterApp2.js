@@ -20,6 +20,15 @@ function initMatterApp2(canvas) {
     });
 
     /** ====================================================< MAIN CODE >==================================================== */
+    /**
+     * Phase of Spin: 
+     * 0 = Not spinning
+     * 1 = spin starting
+     * 2 = constant speed
+     * 3 = spin stopping
+     */
+    let spinPhase = 0;
+    let timer;
 
     let gears = window.gears = addGear();
     let key = window.key = addKey();
@@ -31,6 +40,8 @@ function initMatterApp2(canvas) {
     Matter.World.add(world, [gears, constraint]);
     Matter.World.add(world, [key, constraint_2]);
 
+    setTimeout(startSpin, 2000);
+
     Matter.Events.on(engine, 'beforeUpdate', onBeforeUpdate);
     Matter.Events.on(engine, 'collisionStart', onCollision);
 
@@ -39,6 +50,7 @@ function initMatterApp2(canvas) {
     Matter.Engine.run(engine);
     Matter.Render.run(render);
 
+    /** ====================================================< Utility Functions >==================================================== */
     function addGear() {
         var gearsVerticesArray = [-27, -360.5, 33, -359.5, 62.5, -283, 118, -257.5, 182, -306.5, 219, -292.5, 247, -264.5, 228, -170.5, 256, -141.5, 336, -142.5, 360.5, -87, 287.5, -20, 355, 107.5, 334, 141.5, 254, 138.5, 215.5, 186, 234.5, 280, 182.5, 309, 118.5, 261, 60, 274.5, 17, 359.5, -42.5, 353, -65.5, 274, -104.5, 261, -188.5, 309, -223.5, 289, -245.5, 256, -220.5, 179, -264, 139.5, -344, 137.5, -361.5, 79, -288.5, 12, -289.5, -28, -356.5, -73, -354.5, -113, -330, -142.5, -250, -139.5, -217.5, -191, -233.5, -283, -180, -307.5, -116, -259.5, -77, -270.5, -28, -360.5];
         var gearsStr = "";
@@ -51,6 +63,7 @@ function initMatterApp2(canvas) {
         var gearsVertices = Matter.Vertices.fromPath(gearsStr);
         var gears = Matter.Bodies.fromVertices(500, 600, gearsVertices, {
             isStatic: false,
+            angularVelocity: 0,
             label: "game_gear",
             render: {
                 fillStyle: "#228465",
@@ -75,6 +88,7 @@ function initMatterApp2(canvas) {
         var key = Matter.Bodies.fromVertices(275, 600, keyVertices, {
             isStatic: false,
             label: "game_key",
+            density: 0.000001,
             render: {
                 fillStyle: "#995473",
                 strokeStyle: "#457812",
@@ -107,12 +121,40 @@ function initMatterApp2(canvas) {
         });
     }
 
+    function startSpin() {
+        Matter.Body.setAngularVelocity(gears, 0.1);
+        spinPhase = 1;
+    }
+
     function onBeforeUpdate(event) {
+        if (spinPhase === 1 && gears.angularVelocity < 0.04 && gears.angularVelocity > 0.001) {
+            spinPhase = 2;
+
+            if (!timer) {
+                timer = setTimeout(() => {
+                    spinPhase = 3;
+                    timer = null;
+                    Matter.Body.setAngularVelocity(gears, 0.04);
+                }, 4000);
+            }
+        }
+        if (gears.angularVelocity < 0.001) {
+            spinPhase = 0;
+        }
+        if (spinPhase !== 2) { return; }
         // body is static so must manually update velocity for friction to work
         // make compound body rotate constantly
         Matter.Body.setAngularVelocity(gears, 0.04);
         // Matter.Body.setDensuitt
         // Matter.Body.rotate(gears, 0.02);
+    }
+
+    function stopSpinAfter() {
+        stopTimerStarted = true;
+        setTimeout(() => {
+            begin
+            isActive = false;
+        }, 4000);
     }
 
     function onCollision(event) {
