@@ -30,6 +30,8 @@ function initMatterApp2(canvas) {
     let spinPhase = 0;
     let timer;
 
+    let velocityPhases = [0.001, 0.1, 0.25];
+
     let gears = window.gears = addGear();
     let key = window.key = addKey();
 
@@ -39,8 +41,6 @@ function initMatterApp2(canvas) {
 
     Matter.World.add(world, [gears, constraint]);
     Matter.World.add(world, [key, constraint_2]);
-
-    setTimeout(startSpin, 2000);
 
     Matter.Events.on(engine, 'beforeUpdate', onBeforeUpdate);
     Matter.Events.on(engine, 'collisionStart', onCollision);
@@ -122,46 +122,45 @@ function initMatterApp2(canvas) {
     }
 
     function startSpin() {
-        Matter.Body.setAngularVelocity(gears, 0.1);
+        if (spinPhase !== 0) { return; }
+        Matter.Body.setAngularVelocity(gears, velocityPhases[2]);
         spinPhase = 1;
     }
 
     function onBeforeUpdate(event) {
-        if (spinPhase === 1 && gears.angularVelocity < 0.04 && gears.angularVelocity > 0.001) {
+        if (spinPhase === 1 && gears.angularVelocity < velocityPhases[1] && gears.angularVelocity > velocityPhases[0]) {
             spinPhase = 2;
 
             if (!timer) {
                 timer = setTimeout(() => {
 
-                    document.dispatchEvent(new CustomEvent("RESPONSE_RECEIVED", {
-                        detail: {
-                            amount: Math.floor(Math.random() * 1000)
-                        }
-                    }));
+                    document.dispatchEvent(new CustomEvent("RESPONSE_RECEIVED", { detail: { amount: Math.floor(Math.random() * 1000) } }));
 
                     spinPhase = 3;
                     timer = null;
-                    Matter.Body.setAngularVelocity(gears, 0.04);
+                    Matter.Body.setAngularVelocity(gears, velocityPhases[1]);
                 }, 4000);
             }
         }
-        if (gears.angularVelocity < 0.001) {
-            spinPhase = 0;
+        if (gears.angularVelocity < velocityPhases[0]) {
+            onSpinComplete();
         }
+
         if (spinPhase !== 2) { return; }
         // body is static so must manually update velocity for friction to work
         // make compound body rotate constantly
-        Matter.Body.setAngularVelocity(gears, 0.04);
+        Matter.Body.setAngularVelocity(gears, velocityPhases[1]);
         // Matter.Body.setDensuitt
         // Matter.Body.rotate(gears, 0.02);
     }
 
-    function stopSpinAfter() {
-        stopTimerStarted = true;
-        setTimeout(() => {
-            begin
-            isActive = false;
-        }, 4000);
+    function onSpinComplete() {
+        if (spinPhase === 0) { return; }
+
+        spinPhase = 0;
+        let txt = getTextElement();
+        txt.text = "";
+        txt.visible = false;
     }
 
     function onCollision(event) {
@@ -183,6 +182,7 @@ function initMatterApp2(canvas) {
         world,
         render,
         canvas: render.canvas,
-        getSpinPhase
+        getSpinPhase,
+        startSpin
     }
 };

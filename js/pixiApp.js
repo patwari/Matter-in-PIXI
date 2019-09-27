@@ -32,6 +32,20 @@ function initPixiApp(canvas) {
 
     PIXI.sound.add('boing', 'https://raw.githubusercontent.com/pixijs/pixi-sound/master/examples/resources/boing.mp3');
 
+    /** foreground image */
+    const playButton = createButton();
+    playButton.anchor.set(0.5, 1.2);
+    pixiApp.stage.addChild(playButton);
+
+    pixiApp.playButton = playButton;
+
+    window.addEventListener('resize', resize);
+    function resize() {
+        playButton.position.set(innerWidth / 2, innerHeight);
+    };
+    resize();
+    addText(pixiApp);
+
     return pixiApp;
 }
 
@@ -49,7 +63,9 @@ function updateCollisionText(one, two) {
     basicText2.text = one + " :: " + two;
 }
 
-function addText(text) {
+var tempText;
+
+function addText(pixiApp) {
     const style = new PIXI.TextStyle({
         fontFamily: 'Arial',
         fontSize: 36,
@@ -67,7 +83,12 @@ function addText(text) {
         wordWrapWidth: 440,
     });
 
-    let newText = new PIXI.Text(text, style);
-    newText.position.set(10, 150);
-    pixiApp.stage.addChild(newText);
+    tempText = new PIXI.Text("", style);
+    tempText.position.set(10, 150);
+    tempText.visible = false;
+    pixiApp.stage.addChild(tempText);
+}
+
+function getTextElement() {
+    return tempText;
 }

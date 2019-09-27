@@ -39,7 +39,7 @@ matterSprite3.scale.x /= window.devicePixelRatio;
 matterSprite3.scale.y /= window.devicePixelRatio;
 pixiApp.stage.addChild(matterSprite3);
 
-
+pixiApp.playButton.on("pointerup", matterApp2.startSpin)
 
 /** ====================================================</ MAIN CODE >==================================================== */
 
@@ -53,7 +53,9 @@ function onCollisionDetected(event) {
 }
 
 function onResponseReceived(event) {
-    addText("Yo!!!!!!!!!\n RESPONSE_RECEIVED");
+    let txt = getTextElement();
+    txt.visible = true;
+    txt.text = "Yo!!!!!!!!!\n RESPONSE_RECEIVED";
 }
 
 /** ==================================================== UPDATE CYCE ==================================================== */
