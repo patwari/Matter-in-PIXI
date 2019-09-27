@@ -11,6 +11,7 @@ const pixiApp = initPixiApp(canvas);
 
 // init matter.js offscreen
 const matterApp = initMatterApp(offscreenCanvas);
+const matterApp2 = initMatterApp2(offscreenCanvas2);
 const matterApp3 = initMatterApp3(offscreenCanvas3);
 /** ====================================================< MAIN CODE >==================================================== */
 
@@ -22,6 +23,13 @@ matterSprite.scale.x /= window.devicePixelRatio;
 matterSprite.scale.y /= window.devicePixelRatio;
 pixiApp.stage.addChild(matterSprite);
 
+// Render second matter.js as a pixi layer
+const matterTexture2 = PIXI.Texture.from(matterApp2.canvas);
+const matterSprite2 = new PIXI.Sprite(matterTexture2);
+// divide by pixelratio to make it the correct size
+matterSprite2.scale.x /= window.devicePixelRatio;
+matterSprite2.scale.y /= window.devicePixelRatio;
+pixiApp.stage.addChild(matterSprite2);
 
 // Render third matter.js as a pixi layer
 const matterTexture3 = PIXI.Texture.from(matterApp3.canvas);
@@ -44,6 +52,7 @@ requestAnimationFrame(update);
 function update(time) {
     // pixiApp.renderer.reset();
     matterSprite.texture.update();
+    matterSprite2.texture.update();
     matterSprite3.texture.update();
     // pixiApp.render()
 

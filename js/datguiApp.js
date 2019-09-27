@@ -18,7 +18,7 @@ function initDatGui() {
      */
     function guiChangeHandler() {
         matterSprite.visible = guiSettings.layer_01;
-        // matterSprite2.visible = guiSettings.layer_02;
+        matterSprite2.visible = guiSettings.layer_02;
         matterSprite3.visible = guiSettings.layer_03;
     }
 
